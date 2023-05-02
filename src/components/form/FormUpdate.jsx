@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './FormCreate.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Button from '../button/Buttons';
 
 function FormUpdate({ id }) {
     const initialValues = { name: "", price: "", sale: "", category: "", image: "", quantity: "" };
@@ -36,7 +37,6 @@ function FormUpdate({ id }) {
         fetchData()
     }, [id])
     // const form = useRef();
-    console.log(inputValues)
 
 
     const handleChange = (e) => {
@@ -74,6 +74,15 @@ function FormUpdate({ id }) {
         console.log(values)
 
     };
+
+    // Delete Topping
+    const handleDelete = (index) => {
+        const newInput = [...inputValues]
+        newInput.splice(index, 1)
+        setInputValues(newInput)
+    }
+
+    // set Form when modify
     useEffect(() => {
         setFormCurrent({
             ...formValues,
@@ -82,7 +91,7 @@ function FormUpdate({ id }) {
         });
     }, [formValues, sizes, inputValues]);
 
-    console.log(formCurrent)
+    // console.log(formCurrent)
     const handleSubmit = (e) => {
         e.preventDefault();
         if (formValues.sale > 0 && formValues.sale < 100) {
@@ -99,7 +108,6 @@ function FormUpdate({ id }) {
         }
     }
 
-    console.log(sizes)
     return (
         <>
             <form className="contact-us">
@@ -227,14 +235,18 @@ function FormUpdate({ id }) {
                         <div className='heading'>Topping:</div>
                         <div className='wrap__input'>
                             {inputValues.map((value, index) => (
-                                <input
-                                    className='input'
-                                    key={index}
-                                    type="text"
-                                    value={value}
-                                    onChange={(event) => handleInputChange(index, event.target.value)}
-                                    required={index > 0}
-                                />
+                                <div className='wrap__input-content' key={index}>
+                                    <input
+                                        className='input'
+                                        type="text"
+                                        value={value}
+                                        onChange={(event) => handleInputChange(index, event.target.value)}
+                                        required={index > 0}
+                                    />
+                                    <div onClick={() => handleDelete(index)}>
+                                        <Button text={"Xóa"} type={"delete"} />
+                                    </div>
+                                </div>
                             ))}
                             <button className='btn__addinput' onClick={handleAddInput} disabled={inputValues.some(value => value === '')}>
                                 Add More Topping
