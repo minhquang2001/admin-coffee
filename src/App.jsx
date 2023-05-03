@@ -4,9 +4,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Blank from './pages/Blank'
 import Dashboard from './pages/Dashboard'
 import MainLayout from './layout/MainLayout'
+
 import Product from './pages/Product'
 import CreateProduct from './pages/CreateProduct'
 import UpdateProduct from './pages/UpdateProduct'
+
+import User from './pages/Users'
+import CreateUser from './pages/CreateUser'
 function App() {
     return (
         <BrowserRouter>
@@ -15,9 +19,12 @@ function App() {
                     <Route index element={<Dashboard />} />
                     <Route path="orders" element={<Blank />} />
                     <Route path="products" element={<Product />} />
-                    <Route path="add" element={<CreateProduct />} />
+
+                    <Route path="addproduct" element={<CreateProduct />} />
+                    <Route path="adduser" element={<CreateUser />} />
+
                     <Route path="update/:id" element={<UpdateProduct />} />
-                    <Route path="customers" element={<Blank />} />
+                    <Route path="users" element={<User />} />
                     <Route path="settings" element={<Blank />} />
                     <Route path="stats" element={<Blank />} />
                 </Route>

@@ -20,8 +20,8 @@ function ProductTable({ value, handleDelete }) {
             {boolean && 
             <>
                 <div style={{display: 'flex', paddingBottom: '16px'}}>
-                <Link to='/add'>
-                    <Button text={('Thêm sản phẩm')} type={('edit')} />
+                <Link to='/addproduct'>
+                    <Button text={('Add Product')} type={('edit')} />
                 </Link>
             </div>
                 <table>
@@ -47,9 +47,9 @@ function ProductTable({ value, handleDelete }) {
                                         <Link to= {`/update/${item._id}`}
                                         onClick={() => console.log(item)}
                                         >
-                                        <div className='button edit' >Sửa</div>
+                                        <div className='button edit' >Edit</div>
                                         </Link>
-                                        <div className='button delete' onClick={() => handleDelete(item._id)}>Xóa</div>
+                                        <div className='button delete' onClick={() => handleDelete(item._id)}>Delete</div>
                                     </div>
                                 </td>
                             </tr>

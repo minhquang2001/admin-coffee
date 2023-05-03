@@ -23,7 +23,7 @@ td,th {
     }
 }
 
-.table__img {
+.table__img, .table__phone, .table__password, .table__order {
     width: 20%
 }
 .table__price {
@@ -32,7 +32,7 @@ td,th {
 .table__name {
     width: 50%;
 }
-.table__funtion {
+.table__funtion, .table__name-user {
     width: 20%;
 }
 .wrap__option {
