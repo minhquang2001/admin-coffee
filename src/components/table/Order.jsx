@@ -2,17 +2,11 @@ import React from 'react'
 import './table.scss'
 import { Link } from 'react-router-dom'
 import Button from '../button/Buttons'
-function UserTable({ value, handleDelete }) {
+function OrderTable({ value }) {
 
     let boolean = (value.length > 0) ? true : false
 
-    // const handleDelete = (id) => {
-    //     axios.delete(`https://api-coffee-e8kl.onrender.com/api/product/${id}`)
 
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
-    // }
 
     return (
         <div>
@@ -29,14 +23,14 @@ function UserTable({ value, handleDelete }) {
                             <tr>
                                 <th className='table__phone'>Phone</th>
                                 <th className='table__name-user'>Name</th>
-                                <th className='table__password'>Password</th>
-                                <th className='table__order'>Orders</th>
+                                <th className='table__password'>Orders</th>
+                                <th className='table__order'>Show</th>
                                 <th className='table__function'></th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {value.map((item) => (
+                            {value?.map((item) => (
                                 <tr key={item._id}>
                                     <td>
                                         {item.phone}
@@ -53,7 +47,7 @@ function UserTable({ value, handleDelete }) {
                                             >
                                                 <div className='button edit' >Edit</div>
                                             </Link>
-                                            <div className='button delete' onClick={() => handleDelete(item._id)} >Delete</div>
+                                            <div className='button delete' onClick={() => console.log(item._id)} >Delete</div>
                                         </div>
                                     </td>
                                 </tr>
@@ -67,4 +61,4 @@ function UserTable({ value, handleDelete }) {
     )
 }
 
-export default UserTable
+export default OrderTable

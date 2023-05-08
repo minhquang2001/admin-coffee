@@ -44,7 +44,7 @@ function ProductTable({ value, handleDelete }) {
                                 <td>{item.price}</td>
                                 <td>
                                     <div className='wrap__option'>
-                                        <Link to= {`/update/${item._id}`}
+                                        <Link to= {`/update/product/${item._id}`}
                                         onClick={() => console.log(item)}
                                         >
                                         <div className='button edit' >Edit</div>
