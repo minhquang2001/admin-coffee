@@ -12,6 +12,7 @@ import UpdateProduct from './pages/UpdateProduct'
 import UpdateUser from './pages/UpdateUser'
 import User from './pages/Users'
 import Order from './pages/Orders'
+import OrdersDetail from './pages/OrdersDetail'
 import CreateUser from './pages/CreateUser'
 function App() {
     return (
@@ -28,6 +29,8 @@ function App() {
                     <Route path="update/user/:id" element={<UpdateUser />} />
 
                     <Route path="orders" element={<Order />} />
+                    <Route path="orders/:id" element={<OrdersDetail />} />
+
 
                     <Route path="users" element={<User />} />
                     <Route path="settings" element={<Blank />} />

@@ -23,8 +23,8 @@ function OrderTable({ value }) {
                             <tr>
                                 <th className='table__phone'>Phone</th>
                                 <th className='table__name-user'>Name</th>
-                                <th className='table__password'>Orders</th>
-                                <th className='table__order'>Show</th>
+                                <th className='table__password'>Address</th>
+                                <th className='table__order'>Orders</th>
                                 <th className='table__function'></th>
                             </tr>
                         </thead>
@@ -35,15 +35,17 @@ function OrderTable({ value }) {
                                     <td>
                                         {item.phone}
                                     </td>
-                                    <td>{item.name}</td>
-                                    <td>{item.password}</td>
+                                    <td>{item.fullName}</td>
+                                    <td>{item.address}</td>
                                     <td>
-                                        <Button text={"Show"} type={"edit"} />
+                                        <Link to={`/orders/${item.id}`}>
+                                            <Button text={"Show"} type={"edit"} />
+                                        </Link>
                                     </td>
                                     <td>
                                         <div className='wrap__option'>
-                                            <Link to={`/update/user/${item._id}`}
-                                            // onClick={() => console.log(item)}
+                                            <Link to={`/update/user/${item.id}`}
+                                            // onClick={() => console.log(item.id)}
                                             >
                                                 <div className='button edit' >Edit</div>
                                             </Link>

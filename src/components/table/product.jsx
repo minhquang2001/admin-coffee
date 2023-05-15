@@ -41,7 +41,7 @@ function ProductTable({ data, handleDelete }) {
                                         >
                                         <div className='button edit' >Edit</div>
                                         </Link>
-                                        <div className='button delete' onClick={() => handleDelete(item._id)}>Delete</div>
+                                        <div className='button delete' onClick={() => handleDelete(item.id)}>Delete</div>
                                     </div>
                                 </td>
                             </tr>

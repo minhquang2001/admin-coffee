@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from "sweetalert2";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getDatabase, ref, push, set } from "firebase/database";
 
 import './FormCreate.scss';
 
@@ -14,6 +15,7 @@ function FormCreate() {
   const [sizes, setSizes] = useState([]);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const db = getDatabase();
 
   const navigate = useNavigate()
   // const form = useRef();
@@ -85,7 +87,7 @@ function FormCreate() {
     if (!values.category) {
       errors.category = "Category is required!"
     }
-    if(sizes.length === 0) {
+    if (sizes.length === 0) {
       errors.size = "Choose at least 1 size"
     }
     if (!values.description) {
@@ -115,8 +117,19 @@ function FormCreate() {
     (async function () {
       console.log(formErrors, isSubmit);
       if (Object.keys(formErrors).length === 0 && isSubmit) {
+        const productsRef = ref(db, 'products');
         try {
-          await axios.post("https://api-coffee-e8kl.onrender.com/api/product/add", formCurrent);
+          const newProductRef = push(productsRef);
+          const newProductId = parseInt(newProductRef.key,10);
+          set(newProductRef, formCurrent)
+            .then(() => {
+              console.log('Tạo sản phẩm mới thành công');
+              console.log('Id của sản phẩm mới:', newProductId);
+            })
+            .catch((error) => {
+              console.log('Lỗi khi tạo sản phẩm mới:', error);
+            });
+          // await axios.post("https://api-coffee-e8kl.onrender.com/api/product/add", formCurrent);
           Swal.fire({
             position: "center",
             icon: "success",

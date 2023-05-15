@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import ProductTable from '../components/table/product'
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, remove } from "firebase/database";
 import { initializeApp } from "firebase/app";
 
 
@@ -37,11 +37,20 @@ function Product() {
 
     
   }, []);
-
+  const handleDelete = (id) => {
+    const databaseRef = ref(db, 'products/' + id);
+    remove(databaseRef)
+    .then(() => {
+      console.log('Xóa dữ liệu thành công');
+    })
+    .catch((error) => {
+      console.log('Lỗi khi xóa dữ liệu:', error);
+    });
+  }
   return (
     <div>
       <h2 style={{paddingBottom: '12px'}}>All Products</h2>
-      {data ? <ProductTable data={data} handleDelete={() => {}} /> : <p>Loading...</p>}
+      {data ? <ProductTable data={data} handleDelete={handleDelete} /> : <p>Loading...</p>}
     </div>
   );
 }

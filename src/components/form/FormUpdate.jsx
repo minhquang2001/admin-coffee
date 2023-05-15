@@ -3,31 +3,14 @@ import './FormCreate.scss';
 import { useNavigate } from 'react-router-dom';
 import Button from '../button/Buttons';
 
-import { doc, updateDoc } from 'firebase/firestore';
 
 import { off } from 'firebase/database';
-import { getFirestore } from 'firebase/firestore'
 
 import 'firebase/database';
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, set } from "firebase/database";
 
+const db = getDatabase();
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAp3tjI0cIy3vcTLjLjSmM9-Zs3r7MVFxg",
-    authDomain: "coffeeapp-20ccf.firebaseapp.com",
-    databaseURL: "https://coffeeapp-20ccf-default-rtdb.firebaseio.com",
-    projectId: "coffeeapp-20ccf",
-    storageBucket: "coffeeapp-20ccf.appspot.com",
-    messagingSenderId: "600333067225",
-    appId: "1:600333067225:web:1430255bf4b31429442fc8",
-    measurementId: "G-6JRVTPKVD9"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const firestore = getFirestore(app);
-const productsRef = ref(db, "products");
 
 function FormUpdate({ id }) {
     const initialValues = { name: "", price: "", sale: "", category: "", image: "", quantity: "" };
@@ -112,31 +95,35 @@ function FormUpdate({ id }) {
 
     // set Form when modify
     useEffect(() => {
+        
         setFormCurrent({
             ...formValues,
             size: sizes,
             topping: inputValues,
         });
     }, [formValues, sizes, inputValues]);
-
-    // console.log(formCurrent)
+    if(formCurrent.topping === undefined) {
+        formCurrent.topping = []
+    }
+    console.log(formCurrent)
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formValues.sale > 0 && formValues.sale < 100) {
+        if (formValues.sale > 0 && formValues.sale < 100 ) {
+            console.log("đã vô")
             try {
-                const docRef = doc(firestore, 'products', id);
-                await updateDoc(docRef, formCurrent.current || {}); // Add fallback to empty object
+                set(ref(db, `products/${id}`), formCurrent)
+                
                 setFormValues(initialValues);
                 navigate('/products');
-          } catch (err) {
-            console.log(err);
-          }
+            } catch (error) {
+                console.log('Lỗi khi cập nhật dữ liệu:', error);
+            }
         } else {
-          alert("Vui lòng nhập giá trị sale từ 0 đến 99");
+            alert("Vui lòng nhập giá trị sale từ 0 đến 99");
         }
-      };
+    };
 
-      
+
 
 
     return (
