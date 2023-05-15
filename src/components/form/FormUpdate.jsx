@@ -1,12 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import './FormCreate.scss';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Button from '../button/Buttons';
 
+import { doc, updateDoc } from 'firebase/firestore';
+
+import { off } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore'
+
+import 'firebase/database';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue } from "firebase/database";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAp3tjI0cIy3vcTLjLjSmM9-Zs3r7MVFxg",
+    authDomain: "coffeeapp-20ccf.firebaseapp.com",
+    databaseURL: "https://coffeeapp-20ccf-default-rtdb.firebaseio.com",
+    projectId: "coffeeapp-20ccf",
+    storageBucket: "coffeeapp-20ccf.appspot.com",
+    messagingSenderId: "600333067225",
+    appId: "1:600333067225:web:1430255bf4b31429442fc8",
+    measurementId: "G-6JRVTPKVD9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const firestore = getFirestore(app);
+const productsRef = ref(db, "products");
+
 function FormUpdate({ id }) {
     const initialValues = { name: "", price: "", sale: "", category: "", image: "", quantity: "" };
-    const [formValues, setFormValues] = useState(initialValues);
+    const [formValues, setFormValues] = useState({ name: "" });
     const [sizes, setSizes] = useState([]);
     const [inputValues, setInputValues] = useState([]);
     const [formCurrent, setFormCurrent] = useState({
@@ -22,22 +47,20 @@ function FormUpdate({ id }) {
     });
     const navigate = useNavigate()
 
-    // get data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`https://api-coffee-e8kl.onrender.com/api/product/${id}`);
-                setFormValues(response.data);
-                setInputValues(response.data?.topping)
-                setSizes(response.data?.size)
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        fetchData()
-    }, [id])
-    // const form = useRef();
 
+
+    useEffect(() => {
+        const productRef = ref(db, `products/${id}`);
+        const onProductValue = (snapshot) => {
+            setFormValues(snapshot.val());
+            setInputValues(snapshot.val()?.topping)
+            setSizes(snapshot.val()?.size)
+        };
+        onValue(productRef, onProductValue);
+        return () => {
+            off(productRef, onProductValue);
+        };
+    }, [db, id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -60,9 +83,14 @@ function FormUpdate({ id }) {
 
     const handleAddInput = (e) => {
         e.preventDefault()
-        const allValuesFilled = inputValues.every(value => value !== '')
-        if (allValuesFilled) {
-            setInputValues([...inputValues, '']);
+        if (inputValues === undefined) {
+            setInputValues(['']);
+        } else {
+
+            const allValuesFilled = inputValues.every(value => value !== '')
+            if (allValuesFilled) {
+                setInputValues([...inputValues, '']);
+            }
         }
     };
 
@@ -92,21 +120,24 @@ function FormUpdate({ id }) {
     }, [formValues, sizes, inputValues]);
 
     // console.log(formCurrent)
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (formValues.sale > 0 && formValues.sale < 100) {
             try {
-                axios.put(`https://api-coffee-e8kl.onrender.com/api/product/${id}`, formCurrent)
-                setFormValues(initialValues)
-                navigate('/products')
-            }
-            catch (err) {
-                console.log(err)
-            }
+                const docRef = doc(firestore, 'products', id);
+                await updateDoc(docRef, formCurrent.current || {}); // Add fallback to empty object
+                setFormValues(initialValues);
+                navigate('/products');
+          } catch (err) {
+            console.log(err);
+          }
         } else {
-            alert("Vui lòng nhập giá trị sale từ 0 đến 99")
+          alert("Vui lòng nhập giá trị sale từ 0 đến 99");
         }
-    }
+      };
+
+      
+
 
     return (
         <>
@@ -234,7 +265,7 @@ function FormUpdate({ id }) {
                     <div className='form-items'>
                         <div className='heading'>Topping:</div>
                         <div className='wrap__input'>
-                            {inputValues.map((value, index) => (
+                            {inputValues && inputValues.map((value, index) => (
                                 <div className='wrap__input-content' key={index}>
                                     <input
                                         className='input'
@@ -247,12 +278,19 @@ function FormUpdate({ id }) {
                                         <Button text={"Xóa"} type={"delete"} />
                                     </div>
                                 </div>
+
+
+
                             ))}
-                            <button className='btn__addinput' onClick={handleAddInput} disabled={inputValues.some(value => value === '')}>
+                            <button className='btn__addinput' onClick={handleAddInput} >
                                 Add More Topping
                             </button>
+
                         </div>
+
                     </div>
+
+
                     <div className="form-items">
                         <textarea
                             className="input message"

@@ -1,52 +1,49 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react';
 import ProductTable from '../components/table/product'
-import axios from 'axios'
+import { getDatabase, ref, onValue } from "firebase/database";
+import { initializeApp } from "firebase/app";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAp3tjI0cIy3vcTLjLjSmM9-Zs3r7MVFxg",
+  authDomain: "coffeeapp-20ccf.firebaseapp.com",
+  databaseURL: "https://coffeeapp-20ccf-default-rtdb.firebaseio.com",
+  projectId: "coffeeapp-20ccf",
+  storageBucket: "coffeeapp-20ccf.appspot.com",
+  messagingSenderId: "600333067225",
+  appId: "1:600333067225:web:1430255bf4b31429442fc8",
+  measurementId: "G-6JRVTPKVD9"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+
 function Product() {
-    const [data, setData] = useState([])
-    // useEffect(() => {
-    //     fetch('https://api-coffee-e8kl.onrender.com/api/product')
-    //         .then(res => res.json())
-    //         .then(data => {
+  const [data, setData] = useState(null);
 
-    //             setData(data)
-    //         })
-    // }, [data])
-    const deletePromiseRef = useRef(null)
-    useEffect(() => {
-        const fetchData = async () => {
-          const response = await fetch('https://api-coffee-e8kl.onrender.com/api/product')
-          const data = await response.json()
-          setData(data)
-        }
+  useEffect(() => {
+  
+    const productsRef = ref(db, 'products');
+    onValue(productsRef, (snapshot) => {
+      const products = [];
+      snapshot.forEach((childSnapshot) => {
+        const product = childSnapshot.val();
+        product.id = childSnapshot.key;
+        products.push(product);
+      });
+      setData(products);
+    });
+
     
-        fetchData()
-    
-        return () => {
-          if (deletePromiseRef.current) {
-            deletePromiseRef.current.cancel()
-          }
-        }
-      }, [])
-    
-      const handleDelete = (id) => {
-        deletePromiseRef.current = axios.delete(`https://api-coffee-e8kl.onrender.com/api/product/${id}`)
-          .then(() => {
-            setData(data.filter(item => item._id !== id))
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      }
+  }, []);
 
-    return (
-        <div>
-            
-            <h2 style={{paddingBottom: '12px'}}>All Products</h2>
-
-            <ProductTable value={data} handleDelete={handleDelete} />
-
-        </div>
-    )
+  return (
+    <div>
+      <h2 style={{paddingBottom: '12px'}}>All Products</h2>
+      {data ? <ProductTable data={data} handleDelete={() => {}} /> : <p>Loading...</p>}
+    </div>
+  );
 }
 
-export default Product
+export default Product;

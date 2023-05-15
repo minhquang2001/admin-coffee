@@ -2,21 +2,13 @@ import React from 'react'
 import './table.scss'
 import { Link } from 'react-router-dom'
 import Button from '../button/Buttons'
-function ProductTable({ value, handleDelete }) {
+
+function ProductTable({ data, handleDelete }) {
     
-    let boolean = (value.length > 0) ? true : false
-    
-        // const handleDelete = (id) => {
-        //     axios.delete(`https://api-coffee-e8kl.onrender.com/api/product/${id}`)
-            
-        //     .catch(err => {
-        //         console.log(err)
-        //     })
-        // }
+    const boolean = data && data.length > 0;
 
     return (
         <div>
-            
             {boolean && 
             <>
                 <div style={{display: 'flex', paddingBottom: '16px'}}>
@@ -35,8 +27,8 @@ function ProductTable({ value, handleDelete }) {
                     </thead>
         
                     <tbody>
-                        {value.map((item) => (
-                            <tr key={item._id}>
+                        {data.map((item) => (
+                            <tr key={item.id}>
                                 <td>
                                     <img src={item.image} alt=''/>
                                 </td>
@@ -44,7 +36,7 @@ function ProductTable({ value, handleDelete }) {
                                 <td>{item.price}</td>
                                 <td>
                                     <div className='wrap__option'>
-                                        <Link to= {`/update/product/${item._id}`}
+                                        <Link to={`/update/product/${item.id}`}
                                         onClick={() => console.log(item)}
                                         >
                                         <div className='button edit' >Edit</div>
