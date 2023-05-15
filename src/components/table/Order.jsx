@@ -13,11 +13,7 @@ function OrderTable({ value }) {
 
             {boolean &&
                 <>
-                    <div style={{ display: 'flex', paddingBottom: '16px' }}>
-                        <Link to='/adduser'>
-                            <Button text={('Add User')} type={('edit')} />
-                        </Link>
-                    </div>
+                    
                     <table>
                         <thead>
                             <tr>
